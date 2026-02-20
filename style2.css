@@ -1,0 +1,236 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+  background-color: #131417;
+  color: #fff;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.header {
+  width: 100%;
+  height: 12vh;
+  background-color: #1E1F26;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.top-bar {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+}
+
+.save-menu,
+.shortcuts {
+  position: relative;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background 0.18s, color 0.18s;
+}
+
+.save-menu:hover,
+.shortcuts:hover {
+  color: #0ef;
+  background: rgba(14, 238, 255, 0.03);
+}
+
+.save-options,
+.shortcut-options {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: none;
+  flex-direction: column;
+  min-width: 180px;
+  background-color: #262730;
+  padding: 8px;
+  border-radius: 8px;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  z-index: 1010;
+}
+
+.save-menu:hover .save-options,
+.shortcuts:hover .shortcut-options {
+  display: flex;
+}
+
+.save-options button,
+.shortcut-options button {
+  background-color: #2e2f36;
+  color: #fff;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  transition: background 0.14s, transform 0.08s;
+}
+
+.save-options button:hover,
+.shortcut-options button:hover {
+  background-color: #3a3b42;
+  transform: translateX(4px);
+}
+
+.leftP,
+.rightP {
+  flex-basis: 50%;
+  padding: 12px;
+  min-height: 100vh;
+}
+
+textarea {
+  width: 100%;
+  height: 28%;
+  background-color: #222228;
+  color: #fff;
+  padding: 14px 18px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  resize: none;
+  margin-top: 20px;
+  border-radius: 8px;
+  font-family: "Consolas", monospace;
+  transition: border 0.15s;
+  line-height: 1.4;
+}
+
+textarea:focus {
+  border: 1px solid rgba(14, 238, 255, 0.18);
+}
+
+.firstTB {
+  margin-top: 120px;
+}
+
+iframe#output {
+  width: 100%;
+  height: calc(100vh - 110px);
+  background-color: #fff;
+  border: none;
+  margin-top: 110px;
+  border-radius: 8px;
+  display: block;
+}
+
+label {
+  background-color: #1E1F26;
+  display: flex;
+  align-items: center;
+  height: 34px;
+  border-radius: 6px;
+  margin-top: 8px;
+  padding-left: 10px;
+  font-weight: 600;
+  color: #dbe9ef;
+}
+
+label i {
+  margin-right: 10px;
+  color: #0ef;
+}
+
+/* küçük ekrn için */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .leftP,
+  .rightP {
+    flex-basis: auto;
+    padding: 8px;
+  }
+
+  iframe#output,
+  textarea {
+    margin-top: 20px;
+    height: 300px;
+  }
+}
+
+/* Element Shortcuts */
+.square {
+  width: 100px;
+  height: 100px;
+  background-color: #3498db;
+  margin: 18px auto;
+  border-radius: 6px;
+}
+
+.circle {
+  width: 100px;
+  height: 100px;
+  background-color: #e74c3c;
+  border-radius: 50%;
+  margin: 18px auto;
+}
+
+.my-button {
+  display: inline-block;
+  padding: 10px 18px;
+  background-color: #2ecc71;
+  color: #081012;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #3a3b42;
+  border-radius: 6px;
+}
+
+.save-options.active,
+.shortcut-options.active {
+  display: flex !important;
+}
+
+#console-panel {
+  background: #1e1e1e;
+  color: #f88;
+  padding: 10px;
+  margin-top: 5px;
+  font-family: monospace;
+  height: 150px;
+  width: 48.5%;
+  float: right;
+  margin-right: 10px;
+  overflow-y: auto;
+  border-radius: 5px;
+  white-space: pre-wrap;
+}
