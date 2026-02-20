@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/style2.css">
+  <script src="https://kit.fontawesome.com/8daa92a3cd.js" crossorigin="anonymous"></script>
+  <title>Code Editor</title>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="top-bar">
+        <div class="save-menu">
+          <span id="save-toggle"><i class="fa-solid fa-folder-open"></i> Save & Load</span>
+          <div class="save-options">
+            <button onclick="saveCodePrompt()"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            <button onclick="loadCodePrompt()"><i class="fa-solid fa-file-export"></i> Load</button>
+            <button onclick="clearCode()"><i class="fa-solid fa-trash"></i> Clear</button>
+          </div>
+        </div>
+
+        <div class="shortcuts">
+          <span id="shortcut-toggle"><i class="fa-solid fa-bolt"></i> Quick Elements</span>
+          <div class="shortcut-options">
+            <button onclick="insertSnippet('squareDiv')"><i class="fa-regular fa-square"></i> Square Div</button>
+            <button onclick="insertSnippet('circleDiv')"><i class="fa-regular fa-circle"></i> Circle Div</button>
+            <button onclick="insertSnippet('button')"><i class="fa-solid fa-hand-pointer"></i> Button</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Left Panel -->
+    <div class="leftP">
+      <textarea id="html-code" class="firstTB" onkeyup="run()"></textarea>
+      <label><i class="fa-brands fa-html5"></i> HTML</label>
+
+      <textarea id="css-code" onkeyup="run()"></textarea>
+      <label><i class="fa-brands fa-css3-alt"></i> CSS</label>
+
+      <textarea id="js-code" onkeyup="run()"></textarea>
+      <label><i class="fa-brands fa-js"></i> JS</label>
+    </div>
+
+    <!-- Right Pnel -->
+    <div class="rightP">
+      <iframe id="output"></iframe>
+      <label><i class="fa-solid fa-play"></i> Output</label>
+    </div>
+    <div class="console-panel"></div>
+    <div class="label"> </div>
+  </div>
+
+  <div id="console-panel"></div>
+
+  <script>
+
+    function showError(msg) {
+      const panel = document.getElementById("console-panel");
+      panel.style.display = "block";
+      panel.textContent = msg;
+    }
+
+    function clearError() {
+      const panel = document.getElementById("console-panel");
+      panel.style.display = "none";
+      panel.textContent = "";
+    }
+
+    function run() {
+      const htmlCode = document.getElementById("html-code").value;
+      const cssCode = document.getElementById("css-code").value;
+      const jsCode = document.getElementById("js-code").value;
+      const output = document.getElementById("output");
+
+      clearError();
+
+      try {
+        output.contentDocument.body.innerHTML =
+          htmlCode + "<style>" + cssCode + "</style>";
+
+        output.contentWindow.eval(jsCode);
+
+      } catch (error) {
+        showError("Error: " + error.message);
+      }
+
+    }
+
+    // Insert Element Shortcuts
+    function insertSnippet(type) {
+      const htmlArea = document.getElementById("html-code");
+      const cssArea = document.getElementById("css-code");
+
+      let snippetHTML = "";
+      let snippetCSS = "";
+
+      switch (type) {
+        case "squareDiv":
+          snippetHTML = `<div class="square"></div>`;
+          snippetCSS = `.square {
+  width: 100px;
+  height: 100px;
+  background-color: #4CAF50;
+  margin: 10px;
+  border-radius: 8px;
+}\n`;
+          break;
+
+        case "circleDiv":
+          snippetHTML = `<div class="circle"></div>`;
+          snippetCSS = `.circle {
+  width: 100px;
+  height: 100px;
+  background-color: #2196F3;
+  border-radius: 50%;
+  margin: 10px;
+}\n`;
+          break;
+
+        case "button":
+          snippetHTML = `<button class="my-button">Click me</button>`;
+          snippetCSS = `.my-button {
+  background-color: #FF9800;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.my-button:hover {
+  background-color: #E68900;
+}\n`;
+          break;
+      }
+
+      htmlArea.value += `\n${snippetHTML}\n`;
+      cssArea.value += `\n${snippetCSS}\n`;
+      run();
+    }
+
+    // Save / Load / Clear
+    function saveCodePrompt() {
+      let name = prompt("Code Name:");
+      if (!name) return;
+
+      let codes = {
+        html: document.getElementById("html-code").value,
+        css: document.getElementById("css-code").value,
+        js: document.getElementById("js-code").value
+      };
+
+      let allCodes = JSON.parse(localStorage.getItem("allCodes") || "{}");
+      allCodes[name] = codes;
+
+      localStorage.setItem("allCodes", JSON.stringify(allCodes));
+      alert(`"${name}" saved ✅`);
+    }
+
+    function loadCodePrompt() {
+      let allCodes = JSON.parse(localStorage.getItem("allCodes") || "{}");
+      let names = Object.keys(allCodes);
+      if (names.length === 0) {
+        alert("No saved codes found!");
+        return;
+      }
+
+      let selection = prompt("Select a project:\n" + names.join("\n"));
+      if (!selection || !allCodes[selection]) return;
+
+      let codes = allCodes[selection];
+      document.getElementById("html-code").value = codes.html;
+      document.getElementById("css-code").value = codes.css;
+      document.getElementById("js-code").value = codes.js;
+
+      run();
+      alert(`"${selection}" loaded ✅`);
+    }
+
+    function clearCode() {
+      if (confirm("Are you sure you want to delete all code?")) {
+        document.getElementById("html-code").value = "";
+        document.getElementById("css-code").value = "";
+        document.getElementById("js-code").value = "";
+        document.getElementById("output").contentDocument.body.innerHTML = "";
+      }
+    }
+
+    // Togle Menu
+    const saveToggle = document.getElementById("save-toggle");
+    const saveMenu = document.querySelector(".save-options");
+    const shortcutToggle = document.getElementById("shortcut-toggle");
+    const shortcutMenu = document.querySelector(".shortcut-options");
+
+    saveToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      saveMenu.classList.toggle("active");
+      shortcutMenu.classList.remove("active");
+    });
+
+    shortcutToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      shortcutMenu.classList.toggle("active");
+      saveMenu.classList.remove("active");
+    });
+
+    document.addEventListener("click", () => {
+      saveMenu.classList.remove("active");
+      shortcutMenu.classList.remove("active");
+    });
+
+    // Load Last Code
+    window.onload = function () {
+      let lastCode = JSON.parse(localStorage.getItem("allCodes") || "{}");
+      if (Object.keys(lastCode).length > 0) {
+        let lastName = Object.keys(lastCode)[0];
+        let codes = lastCode[lastName];
+        document.getElementById("html-code").value = codes.html;
+        document.getElementById("css-code").value = codes.css;
+        document.getElementById("js-code").value = codes.js;
+        run();
+      }
+    };
+  </script>
+
+</body>
+
+</html>
